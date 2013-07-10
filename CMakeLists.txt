@@ -12,6 +12,8 @@ project(GameEngine)
 
 set_option(BUILD_EXAMPLES FALSE BOOL "Check if you want to build examples with the library")
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 include_directories(include)
 
 add_subdirectory(src)

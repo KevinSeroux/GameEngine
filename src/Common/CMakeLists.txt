@@ -23,3 +23,5 @@ add_library(
     ${BUILD_COMMON_AS}
     ${source_files}
 )
+
+set_property(TARGET ${common_lib_name} PROPERTY FOLDER "GameEngine")
