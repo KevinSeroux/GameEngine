@@ -1,3 +1,5 @@
 link_directories(${PROJECT_BINARY_DIR}/src/Common/)
 
-add_subdirectory(01)
+set(bin_name "01")
+add_subdirectory(${bin_name})
+set_property(TARGET ${bin_name} PROPERTY FOLDER "Examples")
