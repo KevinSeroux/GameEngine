@@ -12,4 +12,5 @@ add_executable(
 target_link_libraries(
     ${bin_name}
     ${common_lib_name}
+    ${window_lib_name}
 )
