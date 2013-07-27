@@ -23,6 +23,8 @@ using namespace common;
 namespace window
 {
 
+Display* XWindow::m_display = 0;
+
 XWindow::XWindow(const char* const title, bool const isFullScreen,
                  uint16_t posX, uint16_t posY, uint16_t width, uint16_t height)
 {
@@ -31,7 +33,9 @@ XWindow::XWindow(const char* const title, bool const isFullScreen,
     m_width = width;
     m_height = height;
 
-    m_display = XOpenDisplay(0);
+    if(m_display == 0)
+        m_display = XOpenDisplay(0);
+
     if(m_display == 0)
     {
         Logger::logError()("Failed to open display");

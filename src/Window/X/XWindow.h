@@ -40,7 +40,7 @@ public:
     void resize(uint16_t const width, uint16_t const height);
 
 private:
-    Display* m_display;
+    static Display* m_display;
     Window m_window;
     XEvent m_xEvent;
     Event m_event;
