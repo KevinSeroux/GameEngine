@@ -15,7 +15,7 @@ file(
     source_files
     *.h
     *.cpp
-    ../../include/GameEngine/Common/*
+    ../../include/GameEngine/Common/*.h
 )
 
 add_library(
