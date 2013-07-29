@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-| This file is part of GameEngine.                                             |
+| Copyright (C) 2013  Kévin Seroux <kevin.seroux@orange.fr>                    |
 |                                                                              |
 | GameEngine is free software: you can redistribute it and/or modify it under  |
 | it under the terms of the GNU Lesser General Public License as published by  |
@@ -15,25 +15,28 @@
 | along with GameEngine.  If not, see <http://www.gnu.org/licenses/>.          |
 \_____________________________________________________________________________*/
 
-#include "GameEngine/Window/Window.h"
-
-#ifdef WINDOWS_SYSTEM
-    #include "Win32/Win32Window.h"
-    typedef window::Win32Window WindowImpl;
-#elif defined(LINUX_SYSTEM)
-    #include "X/XWindow.h"
-    typedef window::XWindow WindowImpl;
-#endif
+#include "GameEngine/Window/BaseImplWindow.h"
 
 namespace window
 {
 
-RenderWindow* const createWindow(const char* const title,
-                                 bool const isFullScreen, uint16_t posX,
-                                 uint16_t posY, uint16_t width,
-                                 uint16_t height)
+uint8_t BaseImplWindow::m_countInstance = 0;
+
+BaseImplWindow::BaseImplWindow()
 {
-    return new WindowImpl(title, isFullScreen, posX, posY, width, height);
+    m_countInstance++;
+    m_instance = m_countInstance;
+}
+
+BaseImplWindow::~BaseImplWindow() {}
+
+bool const BaseImplWindow::exist()
+{
+    if(m_instance != 0)
+        return true;
+    else
+        return false;
 }
 
 }
+

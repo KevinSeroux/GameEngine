@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-| This file is part of GameEngine.                                             |
+| Copyright (C) 2013  Kévin Seroux <kevin.seroux@orange.fr>                    |
 |                                                                              |
 | GameEngine is free software: you can redistribute it and/or modify it under  |
 | it under the terms of the GNU Lesser General Public License as published by  |
@@ -15,108 +15,42 @@
 | along with GameEngine.  If not, see <http://www.gnu.org/licenses/>.          |
 \_____________________________________________________________________________*/
 
+/// \file
+/// \brief Allow to create window without care about the system used
+
 #ifndef WINDOW__H
 #define WINDOW__H
 
-#include <stdint.h>
 #include "GameEngine/Common/Config.h"
+
+#ifdef WINDOWS_SYSTEM
+    #include "GameEngine/Window/Win32/Win32Window.h"
+#elif defined(LINUX_SYSTEM)
+    #include "GameEngine/Window/X/XWindow.h"
+#endif
 
 namespace window
 {
 
-namespace event
-{
+#ifdef WINDOWS_SYSTEM
 
-#define KeyEvent 0
-struct Key
-{
-    bool isPressed;
-    uint16_t keycode;
-};
+    ////////////////////////////////////////////////////////////////////////////
+    /// \typedef
+    /// \brief When you compile on Windows RenderWindow is an alias to create a
+    ///        Win32 window
+    ////////////////////////////////////////////////////////////////////////////
+    typedef Win32Window RenderWindow;
 
-#define MouseMotionEvent 1
-struct MouseMotion
-{
-    uint16_t posX, posY;
-};
+#elif defined(LINUX_SYSTEM)
 
-#define MouseButtonEvent 2
-struct MouseButton
-{
-    bool isPressed;
-    uint8_t button;
-};
+    ////////////////////////////////////////////////////////////////////////////
+    /// \typedef
+    /// \brief When you compile on Linux RenderWindow is an alias to create a
+    ///        X.org window
+    ////////////////////////////////////////////////////////////////////////////
+    typedef XWindow RenderWindow;
 
-#define MouseFocusEvent 3
-struct MouseFocus
-{
-    bool isFocusIn;
-};
-
-#define KeyboardFocusEvent 4
-struct KeyboardFocus
-{
-    bool isFocusIn;
-};
-
-#define WindowMoveEvent 5
-struct WindowMove
-{
-    uint16_t posX, posY;
-};
-
-#define WindowResizeEvent 6
-struct WindowResize
-{
-    uint16_t width, height;
-};
-
-#define WindowHidden     0
-#define WindowObstructed 1
-#define WindowVisible    2
-
-#define WindowVisibilityEvent 7
-struct WindowVisibility
-{
-    char state;
-};
-
-#define WindowDestroyEvent 8
-
-}
-
-struct GAME_ENGINE_EXPORT Event
-{
-    uint8_t type;
-    event::Key key;
-    event::MouseMotion mouseMotion;
-    event::MouseButton mouseButton;
-    event::MouseFocus mouseFocus;
-    event::KeyboardFocus keyboardFocus;
-    event::WindowMove windowMove;
-    event::WindowVisibility windowVisibility;
-    event::WindowResize windowResize;
-};
-
-class ImplBaseWindow
-{
-public:
-    virtual ~ImplBaseWindow() {};
-    virtual void changeVisibility() = 0;
-    virtual const Event* const getEventStructure() = 0;
-    virtual bool getEvent() = 0;
-    virtual void waitEvent() = 0;
-    virtual void move(uint16_t const posX, uint16_t const posY) = 0;
-    virtual void resize(uint16_t const width, uint16_t const height) = 0;
-};
-
-typedef ImplBaseWindow RenderWindow;
-
-/// \brief Think to delete the returned instance !!!
-RenderWindow* const createWindow(const char* const title,
-                                 bool const isFullScreen, uint16_t posX,
-                                 uint16_t posY, uint16_t width,
-                                 uint16_t height);
+#endif
 
 }
 
