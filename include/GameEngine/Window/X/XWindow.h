@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-| This file is part of GameEngine.                                             |
+| Copyright (C) 2013  Kévin Seroux <kevin.seroux@orange.fr>                    |
 |                                                                              |
 | GameEngine is free software: you can redistribute it and/or modify it under  |
 | it under the terms of the GNU Lesser General Public License as published by  |
@@ -15,49 +15,53 @@
 | along with GameEngine.  If not, see <http://www.gnu.org/licenses/>.          |
 \_____________________________________________________________________________*/
 
+/// \file
+/// \brief Contain the XWindow implementation
+
 #ifndef XWINDOW__H
 #define XWINDOW__H
 
 #include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <stdint.h>
-#include "GameEngine/Window/Window.h"
+#include "GameEngine/Window/BaseImplWindow.h"
+#include "GameEngine/Window/Event.h"
 
 namespace window
 {
 
-class XWindow : public ImplBaseWindow
+///////////////////////////////////////////////////////////////////////////////
+/// \brief The implementation for X server
+///
+/// \todo \li Add styles
+///       \li UTF-8 Title
+///       \li Icon
+///       \li Custom cursor
+///       \li Hide the cursor
+///////////////////////////////////////////////////////////////////////////////
+class XWindow : public BaseImplWindow
 {
 public:
-    XWindow(const char* const title, bool const isFullScreen, uint16_t posX,
-            uint16_t posY, uint16_t width, uint16_t height);
+    XWindow(const char* const title, bool const isFullScreen,
+            uint16_t const posX, uint16_t const posY,
+            uint16_t const width, uint16_t const height);
     ~XWindow();
-    void changeVisibility();
-    const Event* const getEventStructure();
-    bool getEvent();
-    void waitEvent();
+    void destroy();
+    void isVisible(bool const visibility);
+    bool checkEvent();
+    bool waitEvent();
     void move(uint16_t const posX, uint16_t const posY);
     void resize(uint16_t const width, uint16_t const height);
 
 private:
+    bool processEvent();
+
     static Display* m_display;
+    static XEvent m_xEvent;
+    static Atom m_windowDestroyRequestEvent;
+
+    uint8_t m_instance;
     Window m_window;
-    XEvent m_xEvent;
-    Event m_event;
-    Atom m_destroyWindowEvent;
     bool m_isVisible;
-    uint16_t m_width, m_height, m_posX, m_posY;
 };
-
-inline XWindow::~XWindow()
-{
-    XCloseDisplay(m_display);
-}
-
-inline const Event* const XWindow::getEventStructure()
-{
-    return &m_event;
-}
 
 inline void XWindow::move(uint16_t const posX, uint16_t const posY)
 {
