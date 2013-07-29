@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-| This file is part of GameEngine.                                             |
+| Copyright (C) 2013  Kévin Seroux <kevin.seroux@orange.fr>                    |
 |                                                                              |
 | GameEngine is free software: you can redistribute it and/or modify it under  |
 | it under the terms of the GNU Lesser General Public License as published by  |
@@ -16,9 +16,50 @@
 \_____________________________________________________________________________*/
 
 #include "GameEngine/Common/Debug/Logger.h"
+#include <cstdio>
+#include <cstdarg>
+#include <iostream>
 
 namespace common
 {
+
+struct InfoLogger : public LoggerBase
+{
+	void operator()(const char* const message, ...)
+	{
+	    va_list pa;
+        va_start(pa, message);
+        vprintf(message, pa);
+        std::cout << std::endl;
+        va_end(pa);
+    }
+};
+
+struct WarningLogger : public LoggerBase
+{
+	void operator()(const char* const message, ...)
+	{
+        va_list pa;
+        va_start(pa, message);
+        printf("[WARNING] ");
+        vprintf(message, pa);
+        std::cout << std::endl;
+        va_end(pa);
+	}
+};
+
+struct ErrorLogger : public LoggerBase
+{
+	void operator()(const char* const message, ...)
+	{
+        va_list pa;
+        va_start(pa, message);
+        printf("[ERROR] ");
+        vprintf(message, pa);
+        std::cout << std::endl;
+        va_end(pa);
+	}
+};
 
 SmartPtr<LoggerBase> Logger::m_infoLogger;
 SmartPtr<LoggerBase> Logger::m_warningLogger;
@@ -58,35 +99,6 @@ LoggerBase& Logger::logError()
     if(m_errorLogger == 0)
         m_errorLogger = new ErrorLogger;
     return *m_errorLogger;
-}
-
-void InfoLogger::operator()(const char* const message, ...)
-{
-	va_list pa;
-	va_start(pa, message);
-	vprintf(message, pa);
-	std::cout << std::endl;
-	va_end(pa);
-}
-
-void WarningLogger::operator()(const char* const message, ...)
-{
-	va_list pa;
-	va_start(pa, message);
-	printf("[WARNING] ");
-	vprintf(message, pa);
-	std::cout << std::endl;
-	va_end(pa);
-}
-
-void ErrorLogger::operator()(const char* message, ...)
-{
-	va_list pa;
-	va_start(pa, message);
-	printf("[ERROR] ");
-	vprintf(message, pa);
-	std::cout << std::endl;
-	va_end(pa);
 }
 
 }
