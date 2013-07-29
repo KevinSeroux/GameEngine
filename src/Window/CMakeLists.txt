@@ -15,13 +15,14 @@ file(
     source_files
     *.h
     *.cpp
-    ../../include/GameEngine/Window/*
+    ../../include/GameEngine/Window/*.h
 )
 
 if(WINDOWS)
     file(
         GLOB_RECURSE
         source_files_platform
+        ../../include/GameEngine/Window/Win32/*.h
         Win32/*.h
         Win32/*.cpp
     )
@@ -31,6 +32,7 @@ else()
         file(
             GLOB_RECURSE
             source_files_platform
+            ../../include/GameEngine/Window/X/*.h
             X/*.h
             X/*.cpp
         )
