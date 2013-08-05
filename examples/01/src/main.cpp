@@ -15,7 +15,10 @@
 \-----------------------------------------------------------------------------*/
 
 #include "GameEngine/Window/Window.h"
+#include "GameEngine/Window/Event.h"
+#include "GameEngine/Window/BaseImplWindow.h"
 #include "GameEngine/Common/Debug/Logger.h"
+#include <GL/GL.h>
 
 using namespace window;
 using namespace common;
@@ -23,164 +26,110 @@ using namespace common;
 int main()
 {
     bool isEnd = false;
-	RenderWindow myWindow("Window 1", false, 400, 400, 800, 600);
-	RenderWindow myWindow2("Window 2", false, 400, 400, 800, 600);
-	const Event* const myEvent = myWindow.getEventStructure();
-	const Event* const myEvent2 = myWindow2.getEventStructure();
 
-	while(!isEnd)
-    {
-        if(myWindow.exist() && myWindow.checkEvent())
-        {
-            Logger::logInfo()("    Window 1");
-            if(myEvent->type == MouseFocusEvent)
-            {
-                if(myEvent->events.mouseFocus.isFocusIn == true)
-                    Logger::logInfo()("        Has the mouse focus");
-                else
-                    Logger::logInfo()("        Has not the mouse focus");
-            }
-            else if(myEvent->type == ActiveWindowEvent)
-            {
-                if(myEvent->events.keyboardFocus.isFocusIn == true)
-                    Logger::logInfo()("        Has the keyboard focus");
-                else
-                    Logger::logInfo()("        Has not the keyboard focus");
-            }
-            else if(myEvent->type == MouseMotionEvent)
-            {
-                Logger::logInfo()("        Cursor position(%u,%u)",
-                                  myEvent->events.mouseMotion.posX,
-                                  myEvent->events.mouseMotion.posY);
-            }
-            else if(myEvent->type == WindowMoveEvent)
-            {
-                Logger::logInfo()("        New position(%u,%u)",
-                                  myEvent->events.windowMove.posX,
-                                  myEvent->events.windowMove.posY);
-            }
-            else if(myEvent->type == WindowResizeEvent)
-            {
-                Logger::logInfo()("        New size(%u,%u)",
-                                  myEvent->events.windowResize.width,
-                                  myEvent->events.windowResize.height);
-            }
-            else if(myEvent->type == MouseButtonEvent)
-            {
-                if(myEvent->events.mouseButton.isPressed == true)
-                {
-                    Logger::logInfo()("        Button %u is pressed",
-                                      myEvent->events.mouseButton.button);
-                }
-                else
-                    Logger::logInfo()("        Button %u is released",
-                                      myEvent->events.mouseButton.button);
-            }
-            else if(myEvent->type == WindowVisibilityEvent)
-            {
-                switch(myEvent->events.windowVisibility.state)
-                {
-                case WindowFullyVisible:
-                    Logger::logInfo()("        Window visible");
-                    break;
-                case WindowObstructed:
-                    Logger::logInfo()("        Window obstructed");
-                    break;
-                case WindowHidden:
-                    Logger::logInfo()("        Window hidden");
-                    break; //OUBLIE ICI
-                }
-            }
-            else if(myEvent->type == KeyEvent)
-            {
-                if(myEvent->events.key.isPressed == true)
-                    Logger::logInfo()("        Key pressed");
-                else
-                    Logger::logInfo()("        Key released");
-            }
-            else if(myEvent->type == WindowDestroyRequestEvent)
-            {
-                myWindow.destroy();
-                if(RenderWindow::getCountInstance() == 0)
-                    isEnd = true;
-            }
-        }
-        else if(myWindow2.exist() && myWindow2.checkEvent())
-        {
-            Logger::logInfo()("    Window 2");
-            if(myEvent2->type == MouseFocusEvent)
-            {
-                if(myEvent2->events.mouseFocus.isFocusIn == true)
-                    Logger::logInfo()("        Has the mouse focus");
-                else
-                    Logger::logInfo()("        Has not the mouse focus");
-            }
-            else if(myEvent2->type == ActiveWindowEvent)
-            {
-                if(myEvent2->events.keyboardFocus.isFocusIn == true)
-                    Logger::logInfo()("        Has the keyboard focus");
-                else
-                    Logger::logInfo()("        Has not the keyboard focus");
-            }
-            else if(myEvent2->type == MouseMotionEvent)
-            {
-                Logger::logInfo()("        Cursor position(%u,%u)",
-                                  myEvent2->events.mouseMotion.posX,
-                                  myEvent2->events.mouseMotion.posY);
-            }
-            else if(myEvent2->type == WindowMoveEvent)
-            {
-                Logger::logInfo()("        New position(%u,%u)",
-                                  myEvent2->events.windowMove.posX,
-                                  myEvent2->events.windowMove.posY);
-            }
-            else if(myEvent2->type == WindowResizeEvent)
-            {
-                Logger::logInfo()("        New size(%u,%u)",
-                                  myEvent2->events.windowResize.width,
-                                  myEvent2->events.windowResize.height);
-            }
-            else if(myEvent2->type == MouseButtonEvent)
-            {
-                if(myEvent2->events.mouseButton.isPressed == true)
-                {
-                    Logger::logInfo()("        Button %u is pressed",
-                                      myEvent2->events.mouseButton.button);
-                }
-                else
-                    Logger::logInfo()("        Button %u is released",
-                                      myEvent2->events.mouseButton.button);
-            }
-            else if(myEvent2->type == WindowVisibilityEvent)
-            {
-                switch(myEvent2->events.windowVisibility.state)
-                {
-                case WindowFullyVisible:
-                    Logger::logInfo()("        Window visible");
-                    break;
-                case WindowObstructed:
-                    Logger::logInfo()("        Window obstructed");
-                    break;
-                case WindowHidden:
-                    Logger::logInfo()("        Window hidden");
-                    break; //OUBLIE ICI
-                }
-            }
-            else if(myEvent2->type == KeyEvent)
-            {
-                if(myEvent2->events.key.isPressed == true)
-                    Logger::logInfo()("        Key pressed");
-                else
-                    Logger::logInfo()("        Key released");
-            }
-            else if(myEvent2->type == WindowDestroyRequestEvent)
-            {
-                myWindow2.destroy();
-                if(RenderWindow::getCountInstance() == 0)
-                    isEnd = true;
-            }
-        }
-    }
+    WindowAttributes attributes;
+	
+    attributes.title = L"諝趥葮鏾";
+    attributes.parent = 0;
+	attributes.iconURL = "Cursor_White.cur";
+    attributes.fullScreen = false;
+    attributes.posX = 0;
+    attributes.posY = 0;
+    attributes.width = 800;
+    attributes.height = 600;
+	attributes.show = true;
+	attributes.displayCursor = true;
+	attributes.openGLVersion = 23;
 
-	return 0;
+	try
+	{
+		GLRenderWindow myWindow(&attributes);
+		const Event* myEvent = myEvent = myWindow.getEventStructure();
+		float green, blue;
+	
+		while(myWindow.isAlive())
+		{
+			myWindow.checkEvent();
+
+			switch(myEvent->type)
+			{
+			/*case KeyDownEvent: //To do
+				Logger::logInfo()("A key has been pressed");
+				break;
+
+			case KeyUpEvent: //To do
+				Logger::logInfo()("A key has been released");
+				break;
+
+			case MouseButtonEvent: //To improve
+				if(myEvent->events.mouseButton.isPressed == true)
+					Logger::logInfo()("Mouse button %u pressed",
+					                  myEvent->events.mouseButton.button);
+				else
+					Logger::logInfo()("Mouse button %u released",
+					                  myEvent->events.mouseButton.button);
+				break;
+
+			case MouseLeaveEvent:
+				Logger::logInfo()("Mouse is outside the client area");
+				break;*/
+
+			case MouseMotionEvent:
+				/*Logger::logInfo()("Cursor position(%u,%u)",
+					              myEvent->events.mouseMotion.posX,
+								  myEvent->events.mouseMotion.posY);*/
+				green = (float)myEvent->events.mouseMotion.posX / myWindow.getWidth();
+				blue = (float)myEvent->events.mouseMotion.posY / myWindow.getHeight();
+				break;
+
+			/*case FocusInWindowEvent: //Does not work
+				Logger::logInfo()("The window has the focus");
+				break;
+
+			case FocusOutWindowEvent: //Does not work
+				Logger::logInfo()("The window has not the focus");
+				break;*/
+
+			/*case WindowMoveEvent: //Does not work
+				Logger::logInfo()("New window's position(%u, %u)",
+				                  myEvent->events.windowMove.posX,
+								  myEvent->events.windowMove.posY);
+				break;
+
+			case WindowResizeEvent: //Work only with maximize/minimize button
+				Logger::logInfo()("New window's size(%u, %u)",
+				                  myEvent->events.windowResize.width,
+								  myEvent->events.windowResize.height);
+				break;
+
+			case WindowHiddenEvent: //Does not work
+				Logger::logInfo()("Window hidden");
+				break;
+
+			case WindowFullyVisibleEvent: //Does not work
+				Logger::logInfo()("Window fully visible");
+				break;
+
+			case WindowDestroyRequestEvent:
+				myWindow.destroy();
+				break;*/
+			}
+		
+			glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(1, green, blue, 0);
+			myWindow.swapBuffers();
+		}
+	}
+	catch(exception::PixelFormatNotFound& ex)
+	{
+		Logger::logError()("Unable to find a pixel format in file %s at line %u"
+						   , ex.file, ex.line);
+	}
+	catch(exception::BadOpenGLVersion& ex)
+	{
+		Logger::logError()("You have tried to use a unsupported OpenGL %u.%u "
+		                   "version", ex.minorVersion, ex.majorVersion); 
+	}
+
+    return 0;
 }
