@@ -39,13 +39,16 @@ int main()
     attributes.height = 600;
 	attributes.show = true;
 	attributes.displayCursor = true;
-	attributes.openGLVersion = 23;
+	unsigned char glVersions[3] = {45, 30, 21};
+	attributes.openGLVersion = glVersions;
+	attributes.version = 3;
 
 	try
 	{
 		GLRenderWindow myWindow(&attributes);
 		const Event* myEvent = myEvent = myWindow.getEventStructure();
-		float green, blue;
+		float green = 0;
+		float blue = 0;
 	
 		while(myWindow.isAlive())
 		{

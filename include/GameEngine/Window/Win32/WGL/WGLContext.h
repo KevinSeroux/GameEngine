@@ -34,7 +34,7 @@ namespace window
 class WGLContext : public Win32Window
 {
 public:
-	WGLContext(const WindowAttributes* const attributes);
+	WGLContext(WindowAttributes* const attributes);
 	~WGLContext();
 
 	void enable() const;

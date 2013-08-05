@@ -68,7 +68,8 @@ namespace window
 		char* iconURL;
 		bool displayCursor;
         Window* parent;
-		unsigned char openGLVersion;
+		unsigned char* openGLVersion;
+		unsigned char version;
         bool fullScreen;
         int16_t posX;
         int16_t posY;

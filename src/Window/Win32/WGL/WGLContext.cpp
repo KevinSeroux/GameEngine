@@ -26,7 +26,7 @@ using namespace common;
 namespace window
 {
 
-WGLContext::WGLContext(const WindowAttributes* const attributes) :
+WGLContext::WGLContext(WindowAttributes* const attributes) :
 	Win32Window(attributes)
 {
 	m_hdc = GetDC(m_windowHandle);
@@ -55,7 +55,7 @@ WGLContext::WGLContext(const WindowAttributes* const attributes) :
 		m_hglrc = wglCreateContext(m_hdc);
 		wglMakeCurrent(m_hdc, m_hglrc);
 
-		if(attributes->openGLVersion > 21) //21 -> OpenGL 2.1
+		if(attributes->openGLVersion[0] > 21) //21 -> OpenGL 2.1
 		{
 			PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB =
 			reinterpret_cast<PFNWGLCHOOSEPIXELFORMATARBPROC>
@@ -75,31 +75,41 @@ WGLContext::WGLContext(const WindowAttributes* const attributes) :
 								      "AttribsARB. OpenGL 2.1 will be used.");
 				else
 				{
-					const int glAttribsList[] =
-					{
-						WGL_CONTEXT_MAJOR_VERSION_ARB,
-						attributes->openGLVersion / 10,
-						WGL_CONTEXT_MINOR_VERSION_ARB,
-						attributes->openGLVersion % 10,
-						0
-					};
+					int glAttribsList[5];
+					glAttribsList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+					glAttribsList[2] = WGL_CONTEXT_MINOR_VERSION_ARB;
+					glAttribsList[4] = 0;
 
-					m_hglrc = wglCreateContextAttribsARB(m_hdc, 0,
-				                                     glAttribsList);
-					if(m_hglrc == NULL)
-						throw exception::BadOpenGLVersion(glAttribsList[1],
-						                                  glAttribsList[3]);
-					
+					unsigned char i(0);
+					for(; i < attributes->version; i++)
+					{
+						glAttribsList[1] = attributes->openGLVersion[i] / 10;
+						glAttribsList[3] = attributes->openGLVersion[i] % 10;
+
+						m_hglrc = wglCreateContextAttribsARB(m_hdc, 0,
+						                                     glAttribsList);
+						if(m_hglrc != NULL)
+						{
+							i = attributes->version;
+							break;
+						}
+
+						if(i == attributes->version - 1)
+							throw exception::BadOpenGLVersion(glAttribsList[1],
+							                                  glAttribsList[3]);
+					}
+
+					attributes->version = attributes->openGLVersion[i];
 					wglMakeCurrent(m_hdc, m_hglrc);
 					Logger::logInfo()("OpenGL %s will be used",
 					                  glGetString(GL_VERSION));
 				}
 			}
 		}
-		else if(attributes->openGLVersion < 21)
+		else if(attributes->openGLVersion[0] < 21)
 			Logger::logWarning()("Attempt to create an OpenGL %.1f context. Ope"
 			                     "nGL 2.1 will be used.",
-								 attributes->openGLVersion / 10.0f);
+								 *attributes->openGLVersion / 10.0f);
 		else
 			Logger::logInfo()("OpenGL 2.1 will be used");
 	}
