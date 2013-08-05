@@ -28,6 +28,8 @@
 namespace window
 {
 
+class WindowAttributes;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief The implementation for X server
 ///
@@ -36,15 +38,17 @@ namespace window
 ///       \li Icon
 ///       \li Custom cursor
 ///       \li Hide the cursor
+///       \li Fullscreen (See to reduce the variable with static)
+///
+/// \test Child window
 ///////////////////////////////////////////////////////////////////////////////
 class XWindow : public BaseImplWindow
 {
 public:
-    XWindow(const char* const title, bool const isFullScreen,
-            uint16_t const posX, uint16_t const posY,
-            uint16_t const width, uint16_t const height);
+    XWindow(const WindowAttributes* const attributes);
     ~XWindow();
     void destroy();
+    void displayFullScreenMode(bool const isInFullScreen);
     void isVisible(bool const visibility);
     bool checkEvent();
     bool waitEvent();
@@ -54,23 +58,24 @@ public:
 private:
     bool processEvent();
 
-    static Display* m_display;
-    static XEvent m_xEvent;
-    static Atom m_windowDestroyRequestEvent;
+    static Display* s_display;
+    static XEvent s_xEvent, s_fullScreenEvent;
+    static Atom s_windowDestroyRequestEvent, s_wmStateAtom,
+	       s_wmStateFullScreenAtom;
 
     uint8_t m_instance;
     Window m_window;
-    bool m_isVisible;
+    bool m_isVisible, m_wasIconified;
 };
 
 inline void XWindow::move(uint16_t const posX, uint16_t const posY)
 {
-    XMoveWindow(m_display, m_window, posX, posY);
+    XMoveWindow(s_display, m_window, posX, posY);
 }
 
 inline void XWindow::resize(uint16_t const width, uint16_t const height)
 {
-    XResizeWindow(m_display, m_window, width, height);
+    XResizeWindow(s_display, m_window, width, height);
 }
 
 }
