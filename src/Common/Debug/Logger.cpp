@@ -15,10 +15,10 @@
 | along with GameEngine.  If not, see <http://www.gnu.org/licenses/>.          |
 \_____________________________________________________________________________*/
 
-#include "GameEngine/Common/Debug/Logger.h"
 #include <cstdio>
 #include <cstdarg>
 #include <iostream>
+#include "GameEngine/Common/Debug/Logger.h"
 
 namespace common
 {
