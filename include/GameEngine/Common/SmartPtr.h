@@ -46,7 +46,7 @@ public:
     ~SmartPtr();
     void operator =(T* const pointer);
     bool operator ==(const void* const pointer) const;
-    T& operator *();
+    T& operator *() const;
 private:
     T* m_pointer;
 };
@@ -80,7 +80,7 @@ inline bool SmartPtr<T>::operator ==(const void* const pointer) const
 }
 
 template <class T>
-inline T& SmartPtr<T>::operator *()
+inline T& SmartPtr<T>::operator *() const
 {
     return *m_pointer;
 }
