@@ -16,27 +16,13 @@
 \_____________________________________________________________________________*/
 
 #include "GameEngine/Window/BaseImplWindow.h"
+#include "GameEngine/Window/Event.h"
 
 namespace window
 {
 
-uint8_t BaseImplWindow::m_countInstance = 0;
-
-BaseImplWindow::BaseImplWindow()
-{
-    m_countInstance++;
-    m_instance = m_countInstance;
-}
+Event BaseImplWindow::s_event;
 
 BaseImplWindow::~BaseImplWindow() {}
 
-bool const BaseImplWindow::exist()
-{
-    if(m_instance != 0)
-        return true;
-    else
-        return false;
-}
-
-}
-
+} //namespace window

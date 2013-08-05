@@ -18,25 +18,32 @@
 /// \file
 /// \brief Provide a base implementation of a window
 
-#ifndef IMPLBASEWINDOW__H
-#define IMPLBASEWINDOW__H
+#ifndef BASEIMPLWINDOW__H
+#define BASEIMPLWINDOW__H
 
-#include "GameEngine/Window/Event.h"
+#include <stdint.h>
 
 namespace window
 {
+	
+//Forward declaration
+class Event;
 
 /// \brief Abstract class for an implementation of a window system
 class BaseImplWindow
 {
 public:
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Get the count of existing windows
+    /// \brief Return a pointer to the event structure updated by checkEvent()
+    ///        or waitEvent()
+    ///
+    /// \details Normally, you just need to get the pointer just one time
     ////////////////////////////////////////////////////////////////////////////
-    static uint8_t const getCountInstance();
+    static const Event* const getEventStructure();
 
-    BaseImplWindow();
-    virtual ~BaseImplWindow();
+	////////////////////////////////////////////////////////////////////////////
+
+	virtual ~BaseImplWindow();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Destroy the window.
@@ -49,24 +56,7 @@ public:
     /// \return \c true if the window exist, \c false is the window has been
     ///         destroyed
     ////////////////////////////////////////////////////////////////////////////
-    bool const exist();
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief Allow to show or hide the window
-    ///
-    /// \details This function don't iconify/maximize the window
-    ///
-    /// \param[in] visibility \c true to show the window or \c false to hide
-    ///
-    virtual void isVisible(bool const visibility) = 0;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief Return a pointer to the event structure updated by checkEvent()
-    ///        or waitEvent()
-    ///
-    /// \details Normally, you just need to get the pointer just one time
-    ////////////////////////////////////////////////////////////////////////////
-    const Event* const getEventStructure();
+    virtual bool const isAlive() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Detect if an event is occured
@@ -84,33 +74,32 @@ public:
     ///
     /// \sa checkEvent()
     ////////////////////////////////////////////////////////////////////////////
-    virtual bool waitEvent() = 0;
+    virtual void waitEvent() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Get the abscissa position of the window
+    /// \brief Get the horizontal position of the window
     ///
     /// \sa getPosY()
     /// \sa move()
     ////////////////////////////////////////////////////////////////////////////
-    uint16_t const getPosX();
+    virtual uint16_t const getPosX() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Get the ordinate position of the window
+    /// \brief Get the vertical position of the window
     ///
     /// \sa getPosX()
     /// \sa move()
     ////////////////////////////////////////////////////////////////////////////
-    uint16_t const getPosY();
+    virtual uint16_t const getPosY() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Move the window on the desktop
     ///
-    /// \param[in] posX The new abscissa position on the desktop
-    /// \param[in] posY The new ordinate position on the desktop
-    ///
-    /// \warning This function, when overloaded, must update m_posX and m_posY
+    /// \param[in] posX The new horizontal position on the desktop
+    /// \param[in] posY The new vertical position on the desktop
     ///
     /// \sa resize()
+	/// \sa moveResize()
     ////////////////////////////////////////////////////////////////////////////
     virtual void move(uint16_t const posX, uint16_t const posY) = 0;
 
@@ -120,7 +109,7 @@ public:
     /// \sa getHeight()
     /// \sa resize()
     ////////////////////////////////////////////////////////////////////////////
-    uint16_t const getWidth();
+    virtual uint16_t const getWidth() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get the height of the window (in pixel)
@@ -128,7 +117,7 @@ public:
     /// \sa getWidth()
     /// \sa resize()
     ////////////////////////////////////////////////////////////////////////////
-    uint16_t const getHeight();
+    virtual uint16_t const getHeight() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Allow to resize the window
@@ -136,80 +125,69 @@ public:
     /// \param[in] width The new width of the window
     /// \param[in] height The new height of the window
     ///
-    /// \warning This function, when overloaded, must update m_width and
-    ///          m_height
-    ///
     /// \sa move()
+	/// \sa moveResize()
     ////////////////////////////////////////////////////////////////////////////
     virtual void resize(uint16_t const width, uint16_t const height) = 0;
+	
+    ////////////////////////////////////////////////////////////////////////////
+	/// \Allow to move and resize the window
+	///
+	/// \param[in] posX The new horizontal position on the desktop
+	/// \param[in] posY The new vertical position on the desktop
+	/// \param[in] width The new width of the window
+	/// \param[in] height The new height of the window
+	///
+	/// \sa move()
+	/// \sa resize()
+    ////////////////////////////////////////////////////////////////////////////
+	virtual void moveResize(uint16_t const posX, uint16_t const posY,
+							uint16_t const width, uint16_t const height) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Allow to show or hide the window
+    ///
+    /// \details This function don't iconify/maximize the window
+    ///
+    /// \param[in] visibility \c true to show the window or \c false to hide
+    ///
+    virtual void setState(char const visibility) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Enable or disable the fullscreen mode
+	///
+	/// \param[in] inFullScreen \c true to switch in fullscreen mode and \c
+	///            false to go back in windowed mode
+    ////////////////////////////////////////////////////////////////////////////
+    virtual void displayFullScreenMode(bool const inFullScreen) = 0;
+
+	////////////////////////////////////////////////////////////////////////////
+	/// \brief Show or hide the cursor
+	///
+	/// \details Useful for example to use your own cursor with a 3D UI
+	///
+	/// \param[in] isCursorDisplayed \c true to display the cursor and \c false
+	///            to hide it
+	////////////////////////////////////////////////////////////////////////////
+	virtual void displayCursor(bool const isCursorDisplayed) = 0;
+
+	////////////////////////////////////////////////////////////////////////////
+	/// \brief Move the cursor to the specified location
+	///
+	/// \param[in] posX The horizontal position of the cursor
+	/// \param[in] posY The vertical position of the cursor
+	////////////////////////////////////////////////////////////////////////////
+	virtual void moveCursor(uint16_t const posX, uint16_t const posY) = 0;
 
 protected:
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The count of existing windows
-    ////////////////////////////////////////////////////////////////////////////
-    static uint8_t m_countInstance;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The instance number of the window
-    ////////////////////////////////////////////////////////////////////////////
-    uint8_t m_instance;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The events structure of the instance
-    ////////////////////////////////////////////////////////////////////////////
-    Event m_event;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The abscissa position of the window
-    ////////////////////////////////////////////////////////////////////////////
-    uint16_t m_posX;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The ordinate position of the window
-    ////////////////////////////////////////////////////////////////////////////
-    uint16_t m_posY;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The width of the window
-    ////////////////////////////////////////////////////////////////////////////
-    uint16_t m_width;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The height of the window
-    ////////////////////////////////////////////////////////////////////////////
-    uint16_t m_height;
+    static Event s_event;
 };
-
-inline uint8_t const BaseImplWindow::getCountInstance()
-{
-    return m_countInstance;
-}
 
 inline const Event* const BaseImplWindow::getEventStructure()
 {
-    return &m_event;
-}
-
-inline uint16_t const BaseImplWindow::getPosX()
-{
-    return m_posX;
-}
-
-inline uint16_t const BaseImplWindow::getPosY()
-{
-    return m_posY;
-}
-
-inline uint16_t const BaseImplWindow::getWidth()
-{
-    return m_width;
-}
-
-inline uint16_t const BaseImplWindow::getHeight()
-{
-    return m_height;
+	return &s_event;
 }
 
 }
 
-#endif // IMPLBASEWINDOW__H
+#endif // BASEIMPLWINDOW__H
