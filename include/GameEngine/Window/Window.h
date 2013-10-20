@@ -60,11 +60,11 @@ namespace window
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Contain all the parameters to create a window
     ////////////////////////////////////////////////////////////////////////////
-    struct WindowAttributes
+    struct GAME_ENGINE_EXPORT WindowAttributes
     {
 		bool show;
 
-        wchar_t* title;
+        char* title;
 		char* iconURL;
 		bool displayCursor;
         Window* parent;

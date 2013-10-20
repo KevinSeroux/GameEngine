@@ -29,7 +29,7 @@ int main()
 
     WindowAttributes attributes;
 	
-    attributes.title = L"諝趥葮鏾";
+    attributes.title = "Title";
     attributes.parent = 0;
 	attributes.iconURL = "Cursor_White.cur";
     attributes.fullScreen = false;

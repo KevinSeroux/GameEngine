@@ -220,7 +220,8 @@ void Win32Window::getVisibility(HWND hwnd)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Win32Window::Win32Window(const WindowAttributes* const attributes)
+GAME_ENGINE_EXPORT
+	Win32Window::Win32Window(const WindowAttributes* const attributes)
 {
 	static bool isFirstInitialization = true;
 	static HINSTANCE hInstance = GetModuleHandle(0);
@@ -312,24 +313,24 @@ Win32Window::Win32Window(const WindowAttributes* const attributes)
 		ShowCursor(false);
 
 	// Creation of the window
-	m_windowHandle = CreateWindowW(L"0", attributes->title, style,
+	m_windowHandle = CreateWindow("0", attributes->title, style,
 	                              posX, posY, width, height,
 								  parent, 0, hInstance, 0);
 }
 
-Win32Window::~Win32Window()
+GAME_ENGINE_EXPORT Win32Window::~Win32Window()
 {
 	destroy();
 }
 
-void Win32Window::destroy()
+GAME_ENGINE_EXPORT void Win32Window::destroy()
 {
 	DestroyWindow(m_windowHandle);
 	m_isAlive = false;
 }
 
 
-bool Win32Window::checkEvent()
+GAME_ENGINE_EXPORT bool Win32Window::checkEvent()
 {
 	/*getVisibility(m_windowHandle);
 	if(s_event.type != 0)
@@ -346,34 +347,34 @@ bool Win32Window::checkEvent()
 	return false;
 }
 
-void Win32Window::waitEvent()
+GAME_ENGINE_EXPORT void Win32Window::waitEvent()
 {
 	while(WaitMessage() && checkEvent());
 }
 
 
-uint16_t const Win32Window::getWidth()
+GAME_ENGINE_EXPORT uint16_t const Win32Window::getWidth()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.right - rect.left;
 }
 
-uint16_t const Win32Window::getHeight()
+GAME_ENGINE_EXPORT uint16_t const Win32Window::getHeight()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.bottom - rect.top;
 }
 
-uint16_t const Win32Window::getPosX()
+GAME_ENGINE_EXPORT uint16_t const Win32Window::getPosX()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.left;
 }
 
-uint16_t const Win32Window::getPosY()
+GAME_ENGINE_EXPORT uint16_t const Win32Window::getPosY()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
@@ -381,7 +382,7 @@ uint16_t const Win32Window::getPosY()
 }
 
 
-void Win32Window::displayFullScreenMode(bool const inFullScreen)
+GAME_ENGINE_EXPORT void Win32Window::displayFullScreenMode(bool const inFullScreen)
 {
 	if(m_inFullScreen == false)
 		SetWindowLongPtr(m_windowHandle, GWL_STYLE, WS_POPUP | WS_MAXIMIZE);

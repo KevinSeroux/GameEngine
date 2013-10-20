@@ -55,7 +55,8 @@ template <class T>
 SmartPtr<T>::SmartPtr() : m_pointer(0) {}
 
 template <class T>
-SmartPtr<T>::SmartPtr(const void* const pointer) : m_pointer(pointer) {}
+SmartPtr<T>::SmartPtr(const void* const pointer) :
+	m_pointer(pointer) {}
 
 template <class T>
 SmartPtr<T>::~SmartPtr()

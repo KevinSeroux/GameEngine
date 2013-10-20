@@ -50,7 +50,7 @@ public:
 /// \brief This is the class which contain the instance of the three types of
 ///        loggers or your own
 ////////////////////////////////////////////////////////////////////////////////
-class GAME_ENGINE_EXPORT Logger
+class Logger
 {
 public:
     ////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ public:
     ///
     /// \param[in] logger It's your logger instance
     ////////////////////////////////////////////////////////////////////////////
-	static void setInfoLogger(LoggerBase* const logger);
+	GAME_ENGINE_IMPORT static void setInfoLogger(LoggerBase* const logger);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Allow to set your own warning logger
@@ -69,7 +69,7 @@ public:
     ///
     /// \param[in] logger It's your logger instance
     ////////////////////////////////////////////////////////////////////////////
-	static void setWarningLogger(LoggerBase* const logger);
+	GAME_ENGINE_IMPORT static void setWarningLogger(LoggerBase* const logger);
 
     ////////////////////////////////////////////////////////////////////////////
 	/// \brief Allow to set your own warning logger
@@ -78,7 +78,7 @@ public:
     ///
     /// \param[in] logger It's your logger instance
     ////////////////////////////////////////////////////////////////////////////
-	static void setErrorLogger(LoggerBase* const logger);
+	GAME_ENGINE_IMPORT static void setErrorLogger(LoggerBase* const logger);
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief This function must be called to log your information message
@@ -90,7 +90,7 @@ public:
     ///
 	/// \return The current info logger instance
 	////////////////////////////////////////////////////////////////////////////
-	static LoggerBase& logInfo();
+	GAME_ENGINE_IMPORT static LoggerBase& logInfo();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief This function must be called to log your warning message
@@ -105,7 +105,7 @@ public:
     ///
 	/// \return The current warning logger instance
 	////////////////////////////////////////////////////////////////////////////
-	static LoggerBase& logWarning();
+	GAME_ENGINE_IMPORT static LoggerBase& logWarning();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief This function must be called to log your error message
@@ -117,14 +117,14 @@ public:
     ///
 	/// \return The current error logger instance
 	////////////////////////////////////////////////////////////////////////////
-	static LoggerBase& logError();
+	GAME_ENGINE_IMPORT static LoggerBase& logError();
 
 private:
 	Logger();
 
-    static SmartPtr<LoggerBase> m_infoLogger;
-    static SmartPtr<LoggerBase> m_warningLogger;
-    static SmartPtr<LoggerBase> m_errorLogger;
+    GAME_ENGINE_EXPORT static SmartPtr<LoggerBase> m_infoLogger;
+    GAME_ENGINE_EXPORT static SmartPtr<LoggerBase> m_warningLogger;
+    GAME_ENGINE_EXPORT static SmartPtr<LoggerBase> m_errorLogger;
 };
 
 }

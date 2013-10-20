@@ -34,8 +34,8 @@ namespace window
 class WGLContext : public Win32Window
 {
 public:
-	WGLContext(WindowAttributes* const attributes);
-	~WGLContext();
+	GAME_ENGINE_IMPORT WGLContext(WindowAttributes* const attributes);
+	GAME_ENGINE_IMPORT ~WGLContext();
 
 	void enable() const;
 	void disable() const;
@@ -66,19 +66,17 @@ inline void WGLContext::swapBuffers() const
 namespace exception
 {
 
-struct PixelFormatNotFound
+struct GAME_ENGINE_IMPORT PixelFormatNotFound
 {
-	PixelFormatNotFound(const char* const pFile, uint16_t const pLine)
-		: file(pFile), line(pLine) {}
+	PixelFormatNotFound(const char* const pFile, uint16_t const pLine);
 
 	const char* file;
 	uint16_t line;
 };
 
-struct BadOpenGLVersion
+struct GAME_ENGINE_IMPORT BadOpenGLVersion
 {
-	BadOpenGLVersion(char const pMinorVersion, char const pMajorVersion)
-		: minorVersion(pMinorVersion), majorVersion(pMajorVersion) {}
+	BadOpenGLVersion(char const pMinorVersion, char const pMajorVersion);
 
 	char minorVersion;
 	char majorVersion;

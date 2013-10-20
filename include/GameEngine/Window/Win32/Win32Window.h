@@ -32,25 +32,25 @@ class WindowAttributes;
 class Win32Window : public BaseImplWindow
 {
 public:
-	Win32Window(const WindowAttributes* const attributes);
-	~Win32Window();
-	void destroy();
+	GAME_ENGINE_IMPORT Win32Window(const WindowAttributes* const attributes);
+	GAME_ENGINE_IMPORT virtual ~Win32Window();
+	GAME_ENGINE_IMPORT void destroy();
 	bool const isAlive();
 
-	bool checkEvent();
-	void waitEvent();
+	GAME_ENGINE_IMPORT bool checkEvent();
+	GAME_ENGINE_IMPORT void waitEvent();
 
-	uint16_t const getPosX();
-	uint16_t const getPosY();
+	GAME_ENGINE_IMPORT uint16_t const getPosX();
+	GAME_ENGINE_IMPORT uint16_t const getPosY();
 	void move(uint16_t const posX, uint16_t const posY);
-	uint16_t const getWidth();
-	uint16_t const getHeight();
+	GAME_ENGINE_IMPORT uint16_t const getWidth();
+	GAME_ENGINE_IMPORT uint16_t const getHeight();
 	void resize(uint16_t const width, uint16_t const height);
 	void moveResize(uint16_t const posX, uint16_t const posY,
 					uint16_t const width, uint16_t const height);
 
 	void setState(char const visibility);
-	void displayFullScreenMode(bool const inFullScreen);
+	GAME_ENGINE_IMPORT void displayFullScreenMode(bool const inFullScreen);
 
 	void displayCursor(bool const mustDisplayCursor);
 	void moveCursor(uint16_t const posX, uint16_t const posY);
@@ -63,7 +63,7 @@ private:
 	                                   LPARAM lParam);
 	static void getVisibility(HWND hwnd);
 
-	static TRACKMOUSEEVENT s_mouseLeaveEvent; //For WM_MOUSELEAVE
+	GAME_ENGINE_EXPORT static TRACKMOUSEEVENT s_mouseLeaveEvent; //For WM_MOUSELEAVE
 
 	bool m_inFullScreen, m_cursorCaptured, m_isAlive;
 };

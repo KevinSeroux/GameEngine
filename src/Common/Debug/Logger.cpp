@@ -65,36 +65,36 @@ SmartPtr<LoggerBase> Logger::m_infoLogger;
 SmartPtr<LoggerBase> Logger::m_warningLogger;
 SmartPtr<LoggerBase> Logger::m_errorLogger;
 
-void Logger::setInfoLogger(LoggerBase* const logger)
+GAME_ENGINE_EXPORT void Logger::setInfoLogger(LoggerBase* const logger)
 {
     m_infoLogger = logger;
 }
 
-void Logger::setWarningLogger(LoggerBase* const logger)
+GAME_ENGINE_EXPORT void Logger::setWarningLogger(LoggerBase* const logger)
 {
     m_warningLogger = logger;
 }
 
-void Logger::setErrorLogger(LoggerBase* const logger)
+GAME_ENGINE_EXPORT void Logger::setErrorLogger(LoggerBase* const logger)
 {
     m_errorLogger = logger;
 }
 
-LoggerBase& Logger::logInfo()
+GAME_ENGINE_EXPORT LoggerBase& Logger::logInfo()
 {
     if(m_infoLogger == 0)
         m_infoLogger = new InfoLogger;
     return *m_infoLogger;
 }
 
-LoggerBase& Logger::logWarning()
+GAME_ENGINE_EXPORT LoggerBase& Logger::logWarning()
 {
     if(m_warningLogger == 0)
         m_warningLogger = new WarningLogger;
     return *m_warningLogger;
 }
 
-LoggerBase& Logger::logError()
+GAME_ENGINE_EXPORT LoggerBase& Logger::logError()
 {
     if(m_errorLogger == 0)
         m_errorLogger = new ErrorLogger;

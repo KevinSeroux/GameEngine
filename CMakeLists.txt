@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 # Thanks to SFML for this macro
 macro(set_option var default type docstring)
-if(NOT DEFINED ${var})
+	if(NOT DEFINED ${var})
         set(${var} ${default})
     endif()
     set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
