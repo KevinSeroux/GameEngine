@@ -26,7 +26,7 @@ using namespace common;
 namespace window
 {
 
-GAME_ENGINE_EXPORT WGLContext::WGLContext(WindowAttributes* const attributes) :
+WGLContext::WGLContext(WindowAttributes* const attributes) :
 	Win32Window(attributes)
 {
 	m_hdc = GetDC(m_windowHandle);
@@ -115,7 +115,7 @@ GAME_ENGINE_EXPORT WGLContext::WGLContext(WindowAttributes* const attributes) :
 	}
 }
 
-GAME_ENGINE_EXPORT WGLContext::~WGLContext()
+WGLContext::~WGLContext()
 {
 	if(m_hglrc != 0)
 	{
@@ -128,7 +128,7 @@ GAME_ENGINE_EXPORT WGLContext::~WGLContext()
 namespace exception
 {
 
-GAME_ENGINE_EXPORT PixelFormatNotFound::PixelFormatNotFound(
+PixelFormatNotFound::PixelFormatNotFound(
 	const char* const pFile, uint16_t const pLine)
 {
 	//Use memcpy ?
@@ -136,7 +136,7 @@ GAME_ENGINE_EXPORT PixelFormatNotFound::PixelFormatNotFound(
 	line = pLine;
 }
 
-GAME_ENGINE_EXPORT BadOpenGLVersion::BadOpenGLVersion(char const pMinorVersion,
+BadOpenGLVersion::BadOpenGLVersion(char const pMinorVersion,
 													  char const pMajorVersion)
 {
 	minorVersion = pMinorVersion;

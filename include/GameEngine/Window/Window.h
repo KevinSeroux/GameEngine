@@ -22,15 +22,13 @@
 #define WINDOW__H
 
 #include "GameEngine/Common/Config.h"
+#include <stdint.h>
 
 #ifdef WINDOWS_SYSTEM
 	#include "GameEngine/Window/Win32/WGL/WGLContext.h"
 #elif defined(LINUX_SYSTEM)
 	#include "GameEngine/Window/X/GLXContext.h"
 #endif
-
-//Forward declaration
-typedef int16_t;
 
 namespace window
 {
@@ -60,7 +58,7 @@ namespace window
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Contain all the parameters to create a window
     ////////////////////////////////////////////////////////////////////////////
-    struct GAME_ENGINE_EXPORT WindowAttributes
+    struct GE_WINDOW WindowAttributes
     {
 		bool show;
 

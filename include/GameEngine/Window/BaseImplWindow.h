@@ -22,7 +22,7 @@
 #define BASEIMPLWINDOW__H
 
 #include <stdint.h>
-#include "GameEngine/Common/Config.h"
+#include "Config.h"
 
 namespace window
 {
@@ -40,11 +40,11 @@ public:
     ///
     /// \details Normally, you just need to get the pointer just one time
     ////////////////////////////////////////////////////////////////////////////
-    GAME_ENGINE_IMPORT static const Event* const getEventStructure();
+    static const Event* const getEventStructure();
 
 	////////////////////////////////////////////////////////////////////////////
 
-	GAME_ENGINE_IMPORT virtual ~BaseImplWindow();
+	GE_WINDOW virtual ~BaseImplWindow();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Destroy the window.
@@ -181,8 +181,13 @@ public:
 	virtual void moveCursor(uint16_t const posX, uint16_t const posY) = 0;
 
 protected:
-    static Event s_event;
+    GE_WINDOW static Event s_event;
 };
+
+inline const Event* const BaseImplWindow::getEventStructure()
+{
+	return &s_event;
+}
 
 }
 

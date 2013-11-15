@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <Windows.h>
 #include "GameEngine/Window/BaseImplWindow.h"
+#include "../Config.h"
 
 namespace window
 {
@@ -32,25 +33,25 @@ class WindowAttributes;
 class Win32Window : public BaseImplWindow
 {
 public:
-	GAME_ENGINE_IMPORT Win32Window(const WindowAttributes* const attributes);
-	GAME_ENGINE_IMPORT virtual ~Win32Window();
-	GAME_ENGINE_IMPORT void destroy();
+	GE_WINDOW Win32Window(const WindowAttributes* const attributes);
+	GE_WINDOW virtual ~Win32Window();
+	GE_WINDOW void destroy();
 	bool const isAlive();
 
-	GAME_ENGINE_IMPORT bool checkEvent();
-	GAME_ENGINE_IMPORT void waitEvent();
+	GE_WINDOW bool checkEvent();
+	GE_WINDOW void waitEvent();
 
-	GAME_ENGINE_IMPORT uint16_t const getPosX();
-	GAME_ENGINE_IMPORT uint16_t const getPosY();
+	GE_WINDOW uint16_t const getPosX();
+	GE_WINDOW uint16_t const getPosY();
 	void move(uint16_t const posX, uint16_t const posY);
-	GAME_ENGINE_IMPORT uint16_t const getWidth();
-	GAME_ENGINE_IMPORT uint16_t const getHeight();
+	GE_WINDOW uint16_t const getWidth();
+	GE_WINDOW uint16_t const getHeight();
 	void resize(uint16_t const width, uint16_t const height);
 	void moveResize(uint16_t const posX, uint16_t const posY,
 					uint16_t const width, uint16_t const height);
 
 	void setState(char const visibility);
-	GAME_ENGINE_IMPORT void displayFullScreenMode(bool const inFullScreen);
+	GE_WINDOW void displayFullScreenMode(bool const inFullScreen);
 
 	void displayCursor(bool const mustDisplayCursor);
 	void moveCursor(uint16_t const posX, uint16_t const posY);
@@ -63,7 +64,7 @@ private:
 	                                   LPARAM lParam);
 	static void getVisibility(HWND hwnd);
 
-	GAME_ENGINE_EXPORT static TRACKMOUSEEVENT s_mouseLeaveEvent; //For WM_MOUSELEAVE
+	static TRACKMOUSEEVENT s_mouseLeaveEvent; //For WM_MOUSELEAVE
 
 	bool m_inFullScreen, m_cursorCaptured, m_isAlive;
 };

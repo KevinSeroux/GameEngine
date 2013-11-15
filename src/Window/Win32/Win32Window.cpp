@@ -95,7 +95,7 @@ LRESULT CALLBACK Win32Window::windowProc(HWND hwnd, UINT message, WPARAM wParam,
 			s_event.events.mouseButton.button = 6;
 		else
 			s_event.events.mouseButton.button = 7;
-			
+
 		return 0;
 
 	case WM_MOUSELEAVE:
@@ -220,8 +220,7 @@ void Win32Window::getVisibility(HWND hwnd)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-GAME_ENGINE_EXPORT
-	Win32Window::Win32Window(const WindowAttributes* const attributes)
+Win32Window::Win32Window(const WindowAttributes* const attributes)
 {
 	static bool isFirstInitialization = true;
 	static HINSTANCE hInstance = GetModuleHandle(0);
@@ -318,24 +317,24 @@ GAME_ENGINE_EXPORT
 								  parent, 0, hInstance, 0);
 }
 
-GAME_ENGINE_EXPORT Win32Window::~Win32Window()
+Win32Window::~Win32Window()
 {
 	destroy();
 }
 
-GAME_ENGINE_EXPORT void Win32Window::destroy()
+void Win32Window::destroy()
 {
 	DestroyWindow(m_windowHandle);
 	m_isAlive = false;
 }
 
 
-GAME_ENGINE_EXPORT bool Win32Window::checkEvent()
+bool Win32Window::checkEvent()
 {
 	/*getVisibility(m_windowHandle);
 	if(s_event.type != 0)
 		return true;*/
-	
+
 	static MSG message;
 	if(PeekMessage(&message, m_windowHandle, 0, 0, PM_REMOVE))
 	{
@@ -347,34 +346,34 @@ GAME_ENGINE_EXPORT bool Win32Window::checkEvent()
 	return false;
 }
 
-GAME_ENGINE_EXPORT void Win32Window::waitEvent()
+void Win32Window::waitEvent()
 {
 	while(WaitMessage() && checkEvent());
 }
 
 
-GAME_ENGINE_EXPORT uint16_t const Win32Window::getWidth()
+uint16_t const Win32Window::getWidth()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.right - rect.left;
 }
 
-GAME_ENGINE_EXPORT uint16_t const Win32Window::getHeight()
+uint16_t const Win32Window::getHeight()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.bottom - rect.top;
 }
 
-GAME_ENGINE_EXPORT uint16_t const Win32Window::getPosX()
+uint16_t const Win32Window::getPosX()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
 	return rect.left;
 }
 
-GAME_ENGINE_EXPORT uint16_t const Win32Window::getPosY()
+uint16_t const Win32Window::getPosY()
 {
 	RECT rect;
 	GetWindowRect(m_windowHandle, &rect);
@@ -382,7 +381,7 @@ GAME_ENGINE_EXPORT uint16_t const Win32Window::getPosY()
 }
 
 
-GAME_ENGINE_EXPORT void Win32Window::displayFullScreenMode(bool const inFullScreen)
+void Win32Window::displayFullScreenMode(bool const inFullScreen)
 {
 	if(m_inFullScreen == false)
 		SetWindowLongPtr(m_windowHandle, GWL_STYLE, WS_POPUP | WS_MAXIMIZE);

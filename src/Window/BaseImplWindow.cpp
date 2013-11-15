@@ -23,11 +23,6 @@ namespace window
 
 Event BaseImplWindow::s_event;
 
-GAME_ENGINE_EXPORT BaseImplWindow::~BaseImplWindow() {}
-
-GAME_ENGINE_EXPORT const Event* const BaseImplWindow::getEventStructure()
-{
-	return &s_event;
-}
+BaseImplWindow::~BaseImplWindow() {}
 
 } //namespace window

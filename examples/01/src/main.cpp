@@ -78,9 +78,9 @@ int main()
 				break;*/
 
 			case MouseMotionEvent:
-				/*Logger::logInfo()("Cursor position(%u,%u)",
+				Logger::logInfo()("Cursor position(%u,%u)",
 					              myEvent->events.mouseMotion.posX,
-								  myEvent->events.mouseMotion.posY);*/
+								  myEvent->events.mouseMotion.posY);
 				green = (float)myEvent->events.mouseMotion.posX / myWindow.getWidth();
 				blue = (float)myEvent->events.mouseMotion.posY / myWindow.getHeight();
 				break;

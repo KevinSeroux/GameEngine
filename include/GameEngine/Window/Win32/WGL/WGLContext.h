@@ -22,10 +22,8 @@
 #define WGL_CONTEXT__H
 
 #include <windows.h>
-#include "GameEngine/Window/Win32/Win32Window.h"
-
-//Forward declaration
-typedef uint16_t;
+#include "../Win32Window.h"
+#include "../../Config.h"
 
 namespace window
 {
@@ -34,8 +32,8 @@ namespace window
 class WGLContext : public Win32Window
 {
 public:
-	GAME_ENGINE_IMPORT WGLContext(WindowAttributes* const attributes);
-	GAME_ENGINE_IMPORT ~WGLContext();
+	GE_WINDOW WGLContext(WindowAttributes* const attributes);
+	GE_WINDOW ~WGLContext();
 
 	void enable() const;
 	void disable() const;
@@ -66,7 +64,7 @@ inline void WGLContext::swapBuffers() const
 namespace exception
 {
 
-struct GAME_ENGINE_IMPORT PixelFormatNotFound
+struct GE_WINDOW PixelFormatNotFound
 {
 	PixelFormatNotFound(const char* const pFile, uint16_t const pLine);
 
@@ -74,7 +72,7 @@ struct GAME_ENGINE_IMPORT PixelFormatNotFound
 	uint16_t line;
 };
 
-struct GAME_ENGINE_IMPORT BadOpenGLVersion
+struct GE_WINDOW BadOpenGLVersion
 {
 	BadOpenGLVersion(char const pMinorVersion, char const pMajorVersion);
 
