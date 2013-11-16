@@ -18,7 +18,10 @@
 /// \file
 /// \brief Defines the macros used by all the modules
 
-#ifdef _WIN32 || defined(__CYGWIN__)
+#ifndef CONFIG__H
+#define CONFIG__H
+
+#if defined(_WIN32) || defined(__CYGWIN__)
 
     ////////////////////////////////////////////////////////////////////////////
     /// \def
@@ -128,3 +131,5 @@ namespace window {} //Just for doxygen
 /// \dir GameEngine/Window/X
 /// \brief Directory of the header files for the X.org window implementation
 ////////////////////////////////////////////////////////////////////////////////
+
+#endif //CONFIG__H

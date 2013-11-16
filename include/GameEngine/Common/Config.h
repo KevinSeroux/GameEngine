@@ -16,7 +16,10 @@
 \_____________________________________________________________________________*/
 
 /// \file
-/// \brief 
+/// \brief
+
+#ifndef COMMON_CONFIG__H
+#define COMMON_CONFIG__H
 
 #include "GameEngine/Config.h"
 
@@ -29,3 +32,5 @@
 		#define GE_COMMON
 	#endif
 #endif
+
+#endif //COMMON_CONFIG__H

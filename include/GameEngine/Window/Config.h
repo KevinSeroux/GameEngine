@@ -16,7 +16,10 @@
 \_____________________________________________________________________________*/
 
 /// \file
-/// \brief 
+/// \brief
+
+#ifndef WINDOW_CONFIG__H
+#define WINDOW_CONFIG__H
 
 #include "GameEngine/Config.h"
 
@@ -29,3 +32,5 @@
 		#define GE_WINDOW
 	#endif
 #endif
+
+#endif //WINDOW_CONFIG__H
