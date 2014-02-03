@@ -22,32 +22,35 @@
 #define WGL_CONTEXT__H
 
 #include <windows.h>
-#include "../Win32Window.h"
 #include "../../Config.h"
+#include <stdint.h>
 
 namespace window
 {
 
+//Forward declarations
+class WindowAttributes;
+
 /// \brief The class to create an OpenGL context for windows
-class WGLContext : public Win32Window
+class WGLContext
 {
 public:
-	GE_WINDOW WGLContext(WindowAttributes* const attributes);
+	GE_WINDOW WGLContext();
 	GE_WINDOW ~WGLContext();
+	GE_WINDOW void init(WindowAttributes * const attributes,
+		HWND const p_handle);
+	GE_WINDOW void destroy();
 
-	void enable() const;
+	GE_WINDOW void enable() const;
 	void disable() const;
 	void swapBuffers() const;
 
 private:
 	HDC m_hdc;
 	HGLRC m_hglrc;
+	HWND m_windowHandle;
+	bool m_isDestroyed;
 };
-
-inline void WGLContext::enable() const
-{
-	wglMakeCurrent(m_hdc, m_hglrc);
-}
 
 inline void WGLContext::disable() const
 {

@@ -18,10 +18,11 @@
 #include "GameEngine/Window/Event.h"
 #include "GameEngine/Window/BaseImplWindow.h"
 #include "GameEngine/Common/Debug/Logger.h"
+#include "MyGLRender.h"
 #include <GL/GL.h>
 
-using namespace window;
 using namespace common;
+using namespace window;
 
 int main()
 {
@@ -45,81 +46,13 @@ int main()
 
 	try
 	{
-		GLRenderWindow myWindow(&attributes);
-		const Event* myEvent = myEvent = myWindow.getEventStructure();
-		float green = 0;
-		float blue = 0;
-	
+		MyGLRender myWindow;
+		myWindow.start(&attributes);
+		
 		while(myWindow.isAlive())
 		{
-			myWindow.checkEvent();
-
-			switch(myEvent->type)
-			{
-			/*case KeyDownEvent: //To do
-				Logger::logInfo()("A key has been pressed");
-				break;
-
-			case KeyUpEvent: //To do
-				Logger::logInfo()("A key has been released");
-				break;
-
-			case MouseButtonEvent: //To improve
-				if(myEvent->events.mouseButton.isPressed == true)
-					Logger::logInfo()("Mouse button %u pressed",
-					                  myEvent->events.mouseButton.button);
-				else
-					Logger::logInfo()("Mouse button %u released",
-					                  myEvent->events.mouseButton.button);
-				break;
-
-			case MouseLeaveEvent:
-				Logger::logInfo()("Mouse is outside the client area");
-				break;*/
-
-			case MouseMotionEvent:
-				Logger::logInfo()("Cursor position(%u,%u)",
-					              myEvent->events.mouseMotion.posX,
-								  myEvent->events.mouseMotion.posY);
-				green = (float)myEvent->events.mouseMotion.posX / myWindow.getWidth();
-				blue = (float)myEvent->events.mouseMotion.posY / myWindow.getHeight();
-				break;
-
-			/*case FocusInWindowEvent: //Does not work
-				Logger::logInfo()("The window has the focus");
-				break;
-
-			case FocusOutWindowEvent: //Does not work
-				Logger::logInfo()("The window has not the focus");
-				break;*/
-
-			/*case WindowMoveEvent: //Does not work
-				Logger::logInfo()("New window's position(%u, %u)",
-				                  myEvent->events.windowMove.posX,
-								  myEvent->events.windowMove.posY);
-				break;
-
-			case WindowResizeEvent: //Work only with maximize/minimize button
-				Logger::logInfo()("New window's size(%u, %u)",
-				                  myEvent->events.windowResize.width,
-								  myEvent->events.windowResize.height);
-				break;
-
-			case WindowHiddenEvent: //Does not work
-				Logger::logInfo()("Window hidden");
-				break;
-
-			case WindowFullyVisibleEvent: //Does not work
-				Logger::logInfo()("Window fully visible");
-				break;
-
-			case WindowDestroyRequestEvent:
-				myWindow.destroy();
-				break;*/
-			}
-		
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(1, green, blue, 0);
+			glClearColor(1, myWindow.getGreen(), myWindow.getBlue(), 0);
 			myWindow.swapBuffers();
 		}
 	}

@@ -22,6 +22,8 @@
 #include <Windows.h>
 #include "GameEngine/Window/BaseImplWindow.h"
 #include "../Config.h"
+#include "WGL/WGLContext.h"
+#include <thread>
 
 namespace window
 {
@@ -33,13 +35,12 @@ class WindowAttributes;
 class Win32Window : public BaseImplWindow
 {
 public:
-	GE_WINDOW Win32Window(const WindowAttributes* const attributes);
 	GE_WINDOW virtual ~Win32Window();
-	GE_WINDOW void destroy();
+	GE_WINDOW void close();
 	bool const isAlive();
+	GE_WINDOW void start(WindowAttributes * const attributes);
 
-	GE_WINDOW bool checkEvent();
-	GE_WINDOW void waitEvent();
+	virtual void onEvent(Event const * const p_event) = 0;
 
 	GE_WINDOW uint16_t const getPosX();
 	GE_WINDOW uint16_t const getPosY();
@@ -56,18 +57,25 @@ public:
 	void displayCursor(bool const mustDisplayCursor);
 	void moveCursor(uint16_t const posX, uint16_t const posY);
 
-protected:
-	HWND m_windowHandle;
+	void swapBuffers() const;
 
 private:
 	static LRESULT CALLBACK windowProc(HWND hwnd, UINT message, WPARAM wParam,
 	                                   LPARAM lParam);
-	static void getVisibility(HWND hwnd);
+	GE_WINDOW void run(WindowAttributes * const attributes);
 
-	static TRACKMOUSEEVENT s_mouseLeaveEvent; //For WM_MOUSELEAVE
-
-	bool m_inFullScreen, m_cursorCaptured, m_isAlive;
+	bool m_inFullScreen, m_cursorCaptured;
+	volatile bool m_isAlive;
+	std::thread* m_inputThread;
+	volatile bool m_isInputThreadReady;
+	HWND m_windowHandle;
+	WGLContext m_wglContext;
 };
+
+inline void Win32Window::close()
+{
+	m_isAlive = false;
+}
 
 inline bool const Win32Window::isAlive()
 {
@@ -106,6 +114,12 @@ inline void Win32Window::displayCursor(bool const mustDisplayCursor)
 inline void Win32Window::moveCursor(uint16_t const posX, uint16_t const posY)
 {
 	SetCursorPos(posX, posY);
+}
+
+
+inline void Win32Window::swapBuffers() const
+{
+	m_wglContext.swapBuffers();
 }
 
 }

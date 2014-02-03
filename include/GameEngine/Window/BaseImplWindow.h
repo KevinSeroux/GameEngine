@@ -29,27 +29,20 @@ namespace window
 	
 //Forward declaration
 class Event;
+class WindowAttributes;
 
 /// \brief Abstract class for an implementation of a window system
 class BaseImplWindow
 {
 public:
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief Return a pointer to the event structure updated by checkEvent()
-    ///        or waitEvent()
-    ///
-    /// \details Normally, you just need to get the pointer just one time
-    ////////////////////////////////////////////////////////////////////////////
-    static const Event* const getEventStructure();
-
-	////////////////////////////////////////////////////////////////////////////
-
 	GE_WINDOW virtual ~BaseImplWindow();
+
+	virtual void start(WindowAttributes * const attributes) = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Destroy the window.
     ////////////////////////////////////////////////////////////////////////////
-    virtual void destroy() = 0;
+    virtual void close() = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Allow to know is the window exist
@@ -59,23 +52,12 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     virtual bool const isAlive() = 0;
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief Detect if an event is occured
-    ///
-    /// \return \c true if an event is occured on the window, else false
-    ///
-    /// \sa waitEvent()
-    ////////////////////////////////////////////////////////////////////////////
-    virtual bool checkEvent() = 0;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief Block the program until an event occur
-    ///
-    /// \return \c true if the event is treatable, else \c false
-    ///
-    /// \sa checkEvent()
-    ////////////////////////////////////////////////////////////////////////////
-    virtual void waitEvent() = 0;
+	////////////////////////////////////////////////////////////////////////////
+	/// \brief Method to herited to handle events
+	///
+	/// \param[in] p_event The event structure received
+	////////////////////////////////////////////////////////////////////////////
+	virtual void onEvent(Event const * const p_event) = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Get the horizontal position of the window
@@ -182,12 +164,10 @@ public:
 
 protected:
     GE_WINDOW static Event s_event;
-};
 
-inline const Event* const BaseImplWindow::getEventStructure()
-{
-	return &s_event;
-}
+private:
+	virtual void run(WindowAttributes* const attributes) = 0;
+};
 
 }
 

@@ -21,14 +21,15 @@
 #ifndef WINDOW__H
 #define WINDOW__H
 
-#include "GameEngine/Common/Config.h"
-#include <stdint.h>
+#include "GameEngine/Window/Config.h"
 
 #ifdef WINDOWS_SYSTEM
-	#include "GameEngine/Window/Win32/WGL/WGLContext.h"
+	#include "GameEngine/Window/Win32/Win32Window.h"
 #elif defined(LINUX_SYSTEM)
-	#include "GameEngine/Window/X/GLXContext.h"
+	#include "GameEngine/Window/X/XWindow.h"
 #endif
+
+#include <stdint.h>
 
 namespace window
 {
@@ -41,7 +42,6 @@ namespace window
     ///        Win32 window
     ////////////////////////////////////////////////////////////////////////////
     typedef Win32Window Window;
-	typedef WGLContext GLRenderWindow;
 
 #elif defined(LINUX_SYSTEM)
 
@@ -51,7 +51,6 @@ namespace window
     ///        X.org window
     ////////////////////////////////////////////////////////////////////////////
     typedef XWindow Window;
-	typedef GLXContext GLRenderWindow;
 
 #endif
 

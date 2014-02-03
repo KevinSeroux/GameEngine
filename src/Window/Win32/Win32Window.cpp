@@ -20,14 +20,10 @@
 #include "GameEngine/Window/Event.h"
 #include "GameEngine/Common/Debug/Logger.h"
 
-#include <iostream>
-
 using namespace common;
 
 namespace window
 {
-
-TRACKMOUSEEVENT Win32Window::s_mouseLeaveEvent;
 
 LRESULT CALLBACK Win32Window::windowProc(HWND hwnd, UINT message, WPARAM wParam,
 										 LPARAM lParam)
@@ -35,320 +31,207 @@ LRESULT CALLBACK Win32Window::windowProc(HWND hwnd, UINT message, WPARAM wParam,
 	switch(message)
 	{
 	default:
-		s_event.type = 0;
 		return DefWindowProc(hwnd, message, wParam, lParam);
+
+	case WM_CREATE:
+		{
+			LONG_PTR window = (LONG_PTR)reinterpret_cast<CREATESTRUCT*>(lParam)
+				->lpCreateParams;
+			SetWindowLongPtr(hwnd, GWLP_USERDATA, window);
+			return 0;
+		}
+
+	///////////////////////////// KEYBOARD MESSAGE /////////////////////////////
+
+	case WM_KEYUP:
+		Logger::logInfo()("WM_KEYUP : %i", wParam);
+		return 0;
+
+	case WM_KEYDOWN:
+		//Logger::logInfo()("WM_KEYDOWN : %i", wParam);
+		s_event.type = event::KeyTextEvent;
+		s_event.events.keyText.character = MapVirtualKey(wParam, MAPVK_VK_TO_CHAR);
+		return 0;
+
+	case WM_CHAR:
+		s_event.type = event::KeyTextEvent;
+		s_event.events.keyText.character = wParam;
+		break;
 
 	/////////////////////////////// MOUSE MESSAGE //////////////////////////////
 
-	/*case WM_LBUTTONDOWN:
-		s_event.type = MouseButtonEvent;
+	case WM_LBUTTONDOWN:
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = true;
 		s_event.events.mouseButton.button = 1;
-		return 0;
+		break;
 
 	case WM_LBUTTONUP:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = false;
 		s_event.events.mouseButton.button = 1;
-		return 0;
-
+		break;
+		
 	case WM_MBUTTONDOWN:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = true;
 		s_event.events.mouseButton.button = 2;
-		return 0;
+		break;
 
 	case WM_MBUTTONUP:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = false;
 		s_event.events.mouseButton.button = 2;
-		return 0;
+		break;
 
 	case WM_RBUTTONDOWN:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = true;
 		s_event.events.mouseButton.button = 3;
-		return 0;
+		break;
 
 	case WM_RBUTTONUP:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = false;
 		s_event.events.mouseButton.button = 3;
-		return 0;
+		break;
 
 	case WM_MOUSEWHEEL:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = false;
 
-		if(HIWORD(wParam) > 0)
-			s_event.events.mouseButton.button = 4;
-		else
+		if(GET_WHEEL_DELTA_WPARAM(wParam) < 0)
 			s_event.events.mouseButton.button = 5;
+		else
+			s_event.events.mouseButton.button = 4;
 
-		return 0;
+		break;
 
 	case WM_MOUSEHWHEEL:
-		s_event.type = MouseButtonEvent;
+		s_event.type = event::MouseButtonEvent;
 		s_event.events.mouseButton.isPressed = false;
 
-		if(HIWORD(wParam) < 0)
+		if(GET_WHEEL_DELTA_WPARAM(wParam) < 0)
 			s_event.events.mouseButton.button = 6;
 		else
 			s_event.events.mouseButton.button = 7;
 
-		return 0;
+		break;
+
+	case WM_XBUTTONDOWN:
+		s_event.type = event::MouseButtonEvent;
+		s_event.events.mouseButton.isPressed = true;
+		if(HIWORD(wParam) == XBUTTON1)
+			s_event.events.mouseButton.button = 8;
+		else
+			s_event.events.mouseButton.button = 9;
+		break;
+
+	case WM_XBUTTONUP:
+		s_event.type = event::MouseButtonEvent;
+		s_event.events.mouseButton.isPressed = false;
+		if(HIWORD(wParam) == XBUTTON1)
+			s_event.events.mouseButton.button = 8;
+		else
+			s_event.events.mouseButton.button = 9;
+		break;
 
 	case WM_MOUSELEAVE:
-		s_event.type = MouseLeaveEvent;
-		return 0;*/
+		s_event.type = event::MouseLeaveEvent;
+		break;
 
 	case WM_MOUSEMOVE:
-		s_event.type = MouseMotionEvent;
+		s_event.type = event::MouseMotionEvent;
 		s_event.events.mouseMotion.posX = LOWORD(lParam);
 		s_event.events.mouseMotion.posY = HIWORD(lParam);
-
-		s_mouseLeaveEvent.hwndTrack = hwnd;
-		TrackMouseEvent(&s_mouseLeaveEvent);
-
-		return 0;
+		break;
 
 	/////////////////////////////// FOCUS MESSAGE //////////////////////////////
 
 	case WM_SETFOCUS:
-		s_event.type = FocusInWindowEvent;
-		Logger::logInfo()("WM_SETFOCUS");
-		return 0;
+		s_event.type = event::FocusInWindowEvent;
+		break;
 
 	case WM_KILLFOCUS:
-		s_event.type = FocusOutWindowEvent;
-		Logger::logInfo()("WM_KILLFOCUS");
-		return 0;
+		s_event.type = event::FocusOutWindowEvent;
+		break;
 
 	////////////////////////////// WINDOW MESSAGE //////////////////////////////
 
-	/*case WM_MOVING:
-		s_event.type = WindowMoveEvent;
-		s_event.events.windowMove.posX = LOWORD(lParam);
-		s_event.events.windowMove.posY = HIWORD(lParam);
-		return TRUE;
-
-	case WM_SIZING:
+	case WM_MOVE:
 		{
-			RECT* rect = reinterpret_cast<RECT*>(lParam);
-			s_event.type = 0;
-			s_event.events.windowResize.width = rect->right - rect->left;
-			s_event.events.windowResize.height = rect->bottom - rect->top;
-			return TRUE;
+			uint16_t posX = LOWORD(lParam);
+			uint16_t posY = HIWORD(lParam);
+
+			if(posX == 33536 && posY == 33536)
+				return 0;
+
+			s_event.type = event::WindowMoveEvent;
+			s_event.events.windowMove.posX = posX;
+			s_event.events.windowMove.posY = posY;
+
+			break;
 		}
 
 	case WM_SIZE:
+		s_event.type = event::WindowResizeEvent;
 		switch(wParam)
 		{
-		/*case SIZE_RESTORED:
-			s_event.type = WindowResizeEvent;
-			s_event.events.windowResize.width = LOWORD(lParam);
-			s_event.events.windowResize.height = HIWORD(lParam);
-			break;
-
 		case SIZE_MAXIMIZED:
-			s_event.type = WindowResizeEvent;
-			s_event.events.windowResize.width = LOWORD(lParam);
-			s_event.events.windowResize.height = HIWORD(lParam);
+			s_event.type = event::WindowMaximizedEvent;
 			break;
 
 		case SIZE_MINIMIZED:
-			s_event.type = WindowHiddenEvent;
-			Logger::logInfo()("SIZE_MINIMIZED");
+			s_event.type = event::WindowMinimizedEvent;
 			break;
 
 		default:
-			s_event.type = 0;
+			s_event.type = event::WindowResizeEvent;
+			s_event.events.windowResize.width = LOWORD(lParam);
+			s_event.events.windowResize.height = HIWORD(lParam);
 			break;
 		}
-		return 0;
+		break;
 
 	case WM_CLOSE:
-		s_event.type = WindowDestroyRequestEvent;
-		return 0;*/
-	}
-}
-
-// Thanks to Bob Moore for the tip http://bobmoore.mvps.org/Win32/w32tip72.htm
-void Win32Window::getVisibility(HWND hwnd)
-{
-	static char prevState;
-
-	HDC hdc = GetDC(hwnd);
-	RECT drawableArea;
-
-	switch(GetClipBox(hdc, &drawableArea))
-	{
-	/*case NULLREGION:
-		if(prevState != WindowHiddenEvent)
-		{
-			s_event.type = WindowHiddenEvent;
-			Logger::logInfo()("NULLREGION");
-			prevState = s_event.type;
-		}
-		else
-			s_event.type = 0;
-		break;*/
-
-	case SIMPLEREGION:
-		RECT fullArea;
-		GetClientRect(hwnd, &fullArea);
-
-		if(EqualRect(&drawableArea, &fullArea))
-		{
-			if(prevState != WindowFullyVisibleEvent)
-			{
-				s_event.type = WindowFullyVisibleEvent;
-				prevState = s_event.type;
-			}
-			else
-				s_event.type = 0;
-		}
-		break;
-
-	default:
-		s_event.type = 0;
+		s_event.type = event::WindowDestroyRequestEvent;
+		Logger::logInfo()("Request to destroy the window");
 		break;
 	}
 
-	ReleaseDC(hwnd, hdc);
+	Win32Window* window = reinterpret_cast<Win32Window*>
+		(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+	if(window->isAlive() == true)
+		window->onEvent(&s_event);
+
+	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Win32Window::Win32Window(const WindowAttributes* const attributes)
-{
-	static bool isFirstInitialization = true;
-	static HINSTANCE hInstance = GetModuleHandle(0);
-	static WNDCLASS wc;
-
-	m_isAlive = true;
-	m_inFullScreen = attributes->fullScreen;
-
-	//To receive WM_MOUSELEAVE
-	if(isFirstInitialization == true)
-	{
-		wc.style = CS_OWNDC; //For OGL context
-		wc.lpfnWndProc = windowProc;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hInstance = hInstance;
-
-		wc.hIcon = NULL;
-		wc.hCursor = NULL;
-
-		wc.lpszMenuName = NULL;
-		wc.lpszClassName = "0";
-
-		s_mouseLeaveEvent.cbSize = sizeof(TRACKMOUSEEVENT);
-		s_mouseLeaveEvent.dwFlags = TME_LEAVE;
-		isFirstInitialization = false;
-	}
-
-	////////////////////////////// ICON MANAGEMENT /////////////////////////////
-	HICON icon = reinterpret_cast<HICON>
-		(LoadImage(hInstance, attributes->iconURL, IMAGE_ICON, 0, 0,
-		LR_DEFAULTSIZE | LR_LOADFROMFILE | LR_SHARED));
-
-	if(icon == NULL)
-		Logger::logWarning()("Failed to load the following icon : %s",
-		                   attributes->iconURL);
-	else
-		wc.hIcon = icon;
-	//////////////////////////// END ICON MANAGEMENT ///////////////////////////
-
-    RegisterClass(&wc);
-
-	/////////////////////////// FULLSCREEN MANAGEMENT //////////////////////////
-	long style;
-	uint16_t posX, posY, width, height;
-
-	if(m_inFullScreen == true)
-	{
-		style = WS_POPUP | WS_MAXIMIZE;
-		posX = posY = 0; /* In fullscreen mode, we don't care of the
-		                        window's size */
-	}
-	else
-	{
-		style = WS_OVERLAPPEDWINDOW;
-
-		if(attributes->posX < 0)
-			posX = CW_USEDEFAULT;
-		else
-			posX = attributes->posX;
-
-		if(attributes->posY < 0)
-			posY = CW_USEDEFAULT;
-		else
-			posY = attributes->posY;
-
-		if(attributes->width < 0)
-			width = CW_USEDEFAULT;
-		else
-			width = attributes->width;
-
-		if(attributes->height < 0)
-			height = CW_USEDEFAULT;
-		else
-			height = attributes->height;
-	}
-	///////////////////////// END FULLSCREEN MANAGEMENT ////////////////////////
-
-	if(attributes->show == true)
-		style |= WS_VISIBLE;
-
-	HWND parent;
-	if(attributes->parent == 0)
-		parent = 0;
-	else
-		parent = attributes->parent->m_windowHandle;
-
-	if(attributes->displayCursor == false)
-		ShowCursor(false);
-
-	// Creation of the window
-	m_windowHandle = CreateWindow("0", attributes->title, style,
-	                              posX, posY, width, height,
-								  parent, 0, hInstance, 0);
-}
-
 Win32Window::~Win32Window()
 {
-	destroy();
+	if(m_isAlive == true)
+		close();
+
+	Logger::logInfo()("Waiting the input thread to be terminate...");
+	m_inputThread->join();
+	Logger::logInfo()("...Input thread terminate");
+	delete m_inputThread;
 }
 
-void Win32Window::destroy()
+void Win32Window::start(WindowAttributes * const attributes)
 {
-	DestroyWindow(m_windowHandle);
-	m_isAlive = false;
-}
+	m_isInputThreadReady = false;
+	m_inputThread = new std::thread(&Win32Window::run, this, attributes);
+	Logger::logInfo()("Input thread is creating. Waiting...");
 
-
-bool Win32Window::checkEvent()
-{
-	/*getVisibility(m_windowHandle);
-	if(s_event.type != 0)
-		return true;*/
-
-	static MSG message;
-	if(PeekMessage(&message, m_windowHandle, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&message);
-		DispatchMessage(&message);
-		if(s_event.type != 0)
-			return true;
-	}
-	return false;
-}
-
-void Win32Window::waitEvent()
-{
-	while(WaitMessage() && checkEvent());
+	//We wait until the context is created
+	//Replace by a message to sleep the main thread ?
+	while(m_isInputThreadReady == false);
+	Logger::logInfo()("...Input thread create");
+	m_wglContext.enable();
 }
 
 
@@ -389,6 +272,122 @@ void Win32Window::displayFullScreenMode(bool const inFullScreen)
 		SetWindowLongPtr(m_windowHandle, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 
 	m_inFullScreen = !inFullScreen;
+}
+
+
+void Win32Window::run(WindowAttributes * const attributes)
+{
+	static bool isFirstInitialization = true;
+	static HINSTANCE hInstance = GetModuleHandle(0);
+	static WNDCLASS wc;
+
+	m_isAlive = true;
+	m_inFullScreen = attributes->fullScreen;
+
+	if(isFirstInitialization == true)
+	{
+		wc.style = CS_OWNDC; //For OGL context
+		wc.lpfnWndProc = windowProc;
+		wc.cbClsExtra = 0;
+		wc.cbWndExtra = sizeof(LONG_PTR); //To call specified callback function
+		wc.hInstance = hInstance;
+
+		wc.hIcon = NULL;
+		wc.hCursor = NULL;
+
+		wc.lpszMenuName = NULL;
+		wc.lpszClassName = "0";
+
+		isFirstInitialization = false;
+	}
+
+	////////////////////////////// ICON MANAGEMENT /////////////////////////////
+
+	HICON icon = reinterpret_cast<HICON>
+		(LoadImage(hInstance, attributes->iconURL, IMAGE_ICON, 0, 0,
+		LR_DEFAULTSIZE | LR_LOADFROMFILE | LR_SHARED));
+
+	if(icon == NULL)
+		Logger::logWarning()("Failed to load the following icon : %s",
+		                   attributes->iconURL);
+	else
+		wc.hIcon = icon;
+
+    RegisterClass(&wc);
+
+	/////////////////////////// FULLSCREEN MANAGEMENT //////////////////////////
+
+	long style;
+	uint16_t posX, posY, width, height;
+
+	if(m_inFullScreen == true)
+	{
+		style = WS_POPUP | WS_MAXIMIZE;
+		posX = posY = 0; /* In fullscreen mode, we don't care of the
+		                        window's size */
+	}
+	else
+	{
+		style = WS_OVERLAPPEDWINDOW;
+
+		if(attributes->posX < 0)
+			posX = CW_USEDEFAULT;
+		else
+			posX = attributes->posX;
+
+		if(attributes->posY < 0)
+			posY = CW_USEDEFAULT;
+		else
+			posY = attributes->posY;
+
+		if(attributes->width < 0)
+			width = CW_USEDEFAULT;
+		else
+			width = attributes->width;
+
+		if(attributes->height < 0)
+			height = CW_USEDEFAULT;
+		else
+			height = attributes->height;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+
+	if(attributes->show == true)
+		style |= WS_VISIBLE;
+
+	HWND parent;
+	if(attributes->parent == 0)
+		parent = 0;
+	else
+		parent = attributes->parent->m_windowHandle;
+
+	if(attributes->displayCursor == false)
+		ShowCursor(false);
+
+	// Creation of the window
+	m_windowHandle = CreateWindow("0", attributes->title, style,
+	                              posX, posY, width, height,
+								  parent, 0, hInstance, this);
+
+	m_wglContext.init(attributes, m_windowHandle);
+
+	//Now, the context can be binded to another thread
+	m_isInputThreadReady = true;
+
+	MSG msg;
+	while(m_isAlive == true)
+	{
+		//Use filter to improve perf ?
+		//Set the window handle ?
+		GetMessage(&msg, NULL, 0, 0);
+
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	DestroyWindow(m_windowHandle);
+	m_wglContext.destroy();
 }
 
 } //namespace window

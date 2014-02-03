@@ -19,17 +19,22 @@
 #include "GameEngine/Window/Win32/WGL/WGLContext.h"
 #include "GameEngine/Window/Window.h"
 #include <gl/GL.h>
-#include "GL\wglext.h"
+#include "GL/wglext.h"
 
 using namespace common;
 
 namespace window
 {
 
-WGLContext::WGLContext(WindowAttributes* const attributes) :
-	Win32Window(attributes)
+WGLContext::WGLContext()
 {
-	m_hdc = GetDC(m_windowHandle);
+	m_isDestroyed = false;
+}
+
+void WGLContext::init(WindowAttributes * const attributes, HWND const p_handle)
+{
+	m_windowHandle = p_handle;
+	m_hdc = GetDC(m_windowHandle); //GetDC(0) ?
 
 	m_hglrc = 0;
 	PIXELFORMATDESCRIPTOR pfd;
@@ -103,6 +108,7 @@ WGLContext::WGLContext(WindowAttributes* const attributes) :
 					wglMakeCurrent(m_hdc, m_hglrc);
 					Logger::logInfo()("OpenGL %s will be used",
 					                  glGetString(GL_VERSION));
+					wglMakeCurrent(NULL, NULL);
 				}
 			}
 		}
@@ -117,12 +123,24 @@ WGLContext::WGLContext(WindowAttributes* const attributes) :
 
 WGLContext::~WGLContext()
 {
-	if(m_hglrc != 0)
+	destroy();
+}
+
+void WGLContext::destroy()
+{
+	if(m_isDestroyed == false && m_hglrc != 0)
 	{
 		wglMakeCurrent(m_hdc, 0);
 		wglDeleteContext(m_hglrc);
 		ReleaseDC(m_windowHandle, m_hdc);
+		m_isDestroyed = true;
 	}
+}
+
+void WGLContext::enable() const
+{
+	if(wglMakeCurrent(m_hdc, m_hglrc) == FALSE)
+		Logger::logError()("Failed to enable OpenGL context");
 }
 
 namespace exception
